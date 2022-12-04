@@ -1,6 +1,39 @@
 import Day2.Outcome.*
 
 object Day2 : AOC {
+
+    private fun parseBattle(line: String): Battle {
+        val (elf, _, me) = line.toList()
+        return Battle(
+            Rps.fromChar(me),
+            Rps.fromChar(elf)
+        )
+    }
+
+    private fun parseOpponentAndOutcome(line: String): Pair<Rps, Outcome> {
+        val (elf, _, outcome) = line.toList()
+        return Pair(
+            Rps.fromChar(elf),
+            Outcome.fromChar(outcome)
+        )
+    }
+
+    override fun part1(input: String): Int = input
+        .lines()
+        .map(::parseBattle)
+        .sumOf { (me, elf) ->
+            val outcome = me battle elf
+            me.points + outcome.points
+        }
+
+    override fun part2(input: String): Int = input
+        .lines()
+        .map(::parseOpponentAndOutcome)
+        .sumOf { (elf, outcome) ->
+            val me = elf battleMustEndWith outcome
+            me.points + outcome.points
+        }
+
     private enum class Rps(val points: Int) {
         ROCK(1), PAPER(2), SCISSORS(3);
 
@@ -71,36 +104,4 @@ object Day2 : AOC {
         val me: Rps,
         val elf: Rps
     )
-
-    private fun parseBattle(line: String): Battle {
-        val (elf, _, me) = line.toList()
-        return Battle(
-            Rps.fromChar(me),
-            Rps.fromChar(elf)
-        )
-    }
-
-    private fun parseOpponentAndOutcome(line: String): Pair<Rps, Outcome> {
-        val (elf, _, outcome) = line.toList()
-        return Pair(
-            Rps.fromChar(elf),
-            Outcome.fromChar(outcome)
-        )
-    }
-
-    override fun part1(input: String): Int = input
-        .lines()
-        .map(::parseBattle)
-        .sumOf { (me, elf) ->
-            val outcome = me battle elf
-            me.points + outcome.points
-        }
-
-    override fun part2(input: String): Int = input
-        .lines()
-        .map(::parseOpponentAndOutcome)
-        .sumOf { (elf, outcome) ->
-            val me = elf battleMustEndWith outcome
-            me.points + outcome.points
-        }
 }

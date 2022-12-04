@@ -1,5 +1,5 @@
 object Day1 : AOC {
-    private fun String.separateElves() = split(System.lineSeparator().repeat(2))
+
     private val elfTotal = { elf: String ->
         elf
             .split(System.lineSeparator())
@@ -7,6 +7,7 @@ object Day1 : AOC {
             .sum()
     }
 
+    private fun String.separateElves() = split(System.lineSeparator().repeat(2))
     override fun part1(input: String): Int = input
         .separateElves()
         .maxOf(elfTotal)
