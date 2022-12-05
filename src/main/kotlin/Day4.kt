@@ -1,4 +1,4 @@
-object Day4 : AOC {
+object Day4 : AOC<Int> {
 
     private operator fun IntRange.contains(other: IntRange): Boolean =
         (this intersect other) == other.toSet()

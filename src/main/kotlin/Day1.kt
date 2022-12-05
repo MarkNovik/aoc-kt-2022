@@ -1,4 +1,4 @@
-object Day1 : AOC {
+object Day1 : AOC<Int> {
 
     private val elfTotal = { elf: String ->
         elf
