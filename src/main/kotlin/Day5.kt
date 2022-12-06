@@ -59,7 +59,7 @@ object Day5 : AOC<String> {
                 stacks[to].push(stacks[from].pop())
             }
         }
-        return stacks.map(Stack<Char>::pop).joinToString("")
+        return stacks.map(List<Char>::last).joinToString("")
     }
 
     override fun part2(input: String): String {
@@ -69,7 +69,6 @@ object Day5 : AOC<String> {
         }
         return stacks.map(Stack<Char>::pop).joinToString("")
     }
-
 
     private data class Move(
         val amount: Int,

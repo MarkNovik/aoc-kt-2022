@@ -21,10 +21,6 @@ tasks.test {
     useJUnitPlatform()
 }
 
-tasks.named("run") {
-    dependsOn(":test")
-}
-
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "17"
 }
