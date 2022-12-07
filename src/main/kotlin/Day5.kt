@@ -1,4 +1,4 @@
-import java.util.*
+import kotlin.collections.ArrayDeque
 
 object Day5 : AOC<String> {
 
@@ -14,10 +14,10 @@ object Day5 : AOC<String> {
                 )
             }.toList()
 
-    private fun parseStacks(stacksStr: String): List<Stack<Char>> {
+    private fun parseStacks(stacksStr: String): List<ArrayDeque<Char>> {
         val lines = stacksStr.lines()
         val indices = lines.last()
-        val stacks = List(indices.maxOf { it.digitToIntOrNull() ?: 0 }) { Stack<Char>() }
+        val stacks = List(indices.maxOf { it.digitToIntOrNull() ?: 0 }) { ArrayDeque<Char>() }
         val stacksMap = lines.dropLast(1).map(String::withIndex).map {
             it.mapNotNull { (i, v) ->
                 indices.getOrNull(i)?.digitToIntOrNull()?.let { stack ->
@@ -29,26 +29,26 @@ object Day5 : AOC<String> {
         }
         stacksMap.asReversed().forEach { line ->
             line.forEach { (index, char) ->
-                stacks[index].push(char)
+                stacks[index].addLast(char)
             }
         }
         return stacks
     }
 
-    private fun parseInput(input: String): Pair<List<Stack<Char>>, List<Move>> = input
+    private fun parseInput(input: String): Pair<List<ArrayDeque<Char>>, List<Move>> = input
         .split(System.lineSeparator().repeat(2))
         .let { (stacks, moves) ->
             parseStacks(stacks) to parseMoves(moves)
         }
 
-    private fun List<Stack<Char>>.move(move: Move) {
+    private fun List<ArrayDeque<Char>>.move(move: Move) {
         val (amount, from, to) = move
-        val temp = Stack<Char>()
+        val temp = ArrayDeque<Char>()
         repeat(amount) {
-            temp.push(this[from].pop())
+            temp.addLast(this[from].removeLast())
         }
         repeat(amount) {
-            this[to].push(temp.pop())
+            this[to].addLast(temp.removeLast())
         }
     }
 
@@ -56,7 +56,7 @@ object Day5 : AOC<String> {
         val (stacks, moves) = parseInput(input)
         moves.forEach { (amount, from, to) ->
             repeat(amount) {
-                stacks[to].push(stacks[from].pop())
+                stacks[to].addLast(stacks[from].removeLast())
             }
         }
         return stacks.map(List<Char>::last).joinToString("")
@@ -67,7 +67,7 @@ object Day5 : AOC<String> {
         moves.forEach { move ->
             stacks.move(move)
         }
-        return stacks.map(Stack<Char>::pop).joinToString("")
+        return stacks.map(ArrayDeque<Char>::removeLast).joinToString("")
     }
 
     private data class Move(
