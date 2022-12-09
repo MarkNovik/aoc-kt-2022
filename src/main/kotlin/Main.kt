@@ -22,7 +22,7 @@ inline fun tryRun(block: () -> Any): String = try {
 } catch (e: NotImplementedError) {
     "Not Implemented"
 } catch (t: Throwable) {
-    "Error: ${t.message ?: "unknown"}"
+    "Error: $t}"
 }
 
 @OptIn(ExperimentalTime::class)
