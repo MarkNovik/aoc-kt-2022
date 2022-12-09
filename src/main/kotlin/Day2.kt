@@ -1,19 +1,19 @@
-import Day2.Outcome.*
+import Outcome.*
 
 object Day2 : AOC<Int> {
 
     private fun parseBattle(line: String): Battle {
         val (elf, _, me) = line.toList()
         return Battle(
-            Rps.fromChar(me),
-            Rps.fromChar(elf)
+            RpsMove.fromChar(me),
+            RpsMove.fromChar(elf)
         )
     }
 
-    private fun parseOpponentAndOutcome(line: String): Pair<Rps, Outcome> {
+    private fun parseOpponentAndOutcome(line: String): Pair<RpsMove, Outcome> {
         val (elf, _, outcome) = line.toList()
         return Pair(
-            Rps.fromChar(elf),
+            RpsMove.fromChar(elf),
             Outcome.fromChar(outcome)
         )
     }
@@ -33,75 +33,72 @@ object Day2 : AOC<Int> {
             val me = elf battleMustEndWith outcome
             me.points + outcome.points
         }
+}
 
-    private enum class Rps(val points: Int) {
-        ROCK(1), PAPER(2), SCISSORS(3);
+private data class Battle(val me: RpsMove, val elf: RpsMove)
 
-        infix fun battle(opponent: Rps): Outcome = when (this) {
-            ROCK -> when (opponent) {
-                ROCK -> DRAW
-                PAPER -> LOSE
-                SCISSORS -> WIN
-            }
+private enum class Outcome(val points: Int) {
+    LOSE(0), DRAW(3), WIN(6);
 
-            PAPER -> when (opponent) {
-                ROCK -> WIN
-                PAPER -> DRAW
-                SCISSORS -> LOSE
-            }
+    companion object {
+        fun fromChar(char: Char) = when (char) {
+            'X' -> LOSE
+            'Y' -> DRAW
+            'Z' -> WIN
+            else -> error("Unexpected outcome `$char`")
+        }
+    }
+}
 
-            SCISSORS -> when (opponent) {
-                ROCK -> LOSE
-                PAPER -> WIN
-                SCISSORS -> DRAW
-            }
+private enum class RpsMove(val points: Int) {
+    ROCK(1), PAPER(2), SCISSORS(3);
+
+    infix fun battle(opponent: RpsMove): Outcome = when (this) {
+        ROCK -> when (opponent) {
+            ROCK -> DRAW
+            PAPER -> LOSE
+            SCISSORS -> WIN
         }
 
-        infix fun battleMustEndWith(result: Outcome): Rps = when (this) {
-            ROCK -> when (result) {
-                LOSE -> SCISSORS
-                DRAW -> ROCK
-                WIN -> PAPER
-            }
-
-            PAPER -> when (result) {
-                LOSE -> ROCK
-                DRAW -> PAPER
-                WIN -> SCISSORS
-            }
-
-            SCISSORS -> when (result) {
-                LOSE -> PAPER
-                DRAW -> SCISSORS
-                WIN -> ROCK
-            }
+        PAPER -> when (opponent) {
+            ROCK -> WIN
+            PAPER -> DRAW
+            SCISSORS -> LOSE
         }
 
-        companion object {
-            fun fromChar(char: Char) = when (char) {
-                'A', 'X' -> ROCK
-                'B', 'Y' -> PAPER
-                'C', 'Z' -> SCISSORS
-                else -> error("Unexpected Rps shape `$char`")
-            }
+        SCISSORS -> when (opponent) {
+            ROCK -> LOSE
+            PAPER -> WIN
+            SCISSORS -> DRAW
         }
     }
 
-    private enum class Outcome(val points: Int) {
-        LOSE(0), DRAW(3), WIN(6);
+    infix fun battleMustEndWith(result: Outcome): RpsMove = when (this) {
+        ROCK -> when (result) {
+            LOSE -> SCISSORS
+            DRAW -> ROCK
+            WIN -> PAPER
+        }
 
-        companion object {
-            fun fromChar(char: Char) = when (char) {
-                'X' -> LOSE
-                'Y' -> DRAW
-                'Z' -> WIN
-                else -> error("Unexpected outcome `$char`")
-            }
+        PAPER -> when (result) {
+            LOSE -> ROCK
+            DRAW -> PAPER
+            WIN -> SCISSORS
+        }
+
+        SCISSORS -> when (result) {
+            LOSE -> PAPER
+            DRAW -> SCISSORS
+            WIN -> ROCK
         }
     }
 
-    private data class Battle(
-        val me: Rps,
-        val elf: Rps
-    )
+    companion object {
+        fun fromChar(char: Char): RpsMove = when (char) {
+            'A', 'X' -> ROCK
+            'B', 'Y' -> PAPER
+            'C', 'Z' -> SCISSORS
+            else -> error("Unexpected Rps shape `$char`")
+        }
+    }
 }

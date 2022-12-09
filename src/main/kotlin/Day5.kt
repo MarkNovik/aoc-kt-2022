@@ -1,38 +1,26 @@
-import kotlin.collections.ArrayDeque
+private typealias Stacks<T> = List<List<T>>
 
 object Day5 : AOC<String> {
+    private fun parseMoves(moves: String): List<Move> = moves
+        .lines()
+        .map { it.split(" ").mapNotNull(String::toIntOrNull) }
+        .map { (amount, from, to) -> Move(amount, from - 1, to - 1) }
 
-    private fun parseMoves(moves: String) =
-        Regex("""move (\d+) from (\d+) to (\d+)""")
-            .findAll(moves)
-            .map {
-                val (_, amount, from, to) = it.groupValues
-                Move(
-                    amount.toInt(),
-                    from.toInt() - 1,
-                    to.toInt() - 1
-                )
-            }.toList()
+    private fun parseStackLine(line: String): List<Char> = line
+        .windowed(3, 4)
+        .map { it.singleOrNull(Char::isLetter) ?: ' ' }
 
-    private fun parseStacks(stacksStr: String): List<ArrayDeque<Char>> {
-        val lines = stacksStr.lines()
-        val indices = lines.last()
-        val stacks = List(indices.maxOf { it.digitToIntOrNull() ?: 0 }) { ArrayDeque<Char>() }
-        val stacksMap = lines.dropLast(1).map(String::withIndex).map {
-            it.mapNotNull { (i, v) ->
-                indices.getOrNull(i)?.digitToIntOrNull()?.let { stack ->
-                    v.takeIf(Char::isLetter)?.let { crate ->
-                        IndexedValue(stack - 1, crate)
-                    }
-                }
-            }
-        }
-        stacksMap.asReversed().forEach { line ->
-            line.forEach { (index, char) ->
-                stacks[index].addLast(char)
-            }
-        }
-        return stacks
+    private fun parseStacks(input: String): List<ArrayDeque<Char>> {
+        val size = input.lines().last().maxOf { it.digitToIntOrNull() ?: 0 }
+        return input
+            .lines()
+            .asReversed()
+            .drop(1)
+            .map(::parseStackLine)
+            .map { it.upSizeTo(size, ' ') }
+            .rotateLeft()
+            .map { it.filter(Char::isLetter) }
+            .map(::ArrayDeque)
     }
 
     private fun parseInput(input: String): Pair<List<ArrayDeque<Char>>, List<Move>> = input
@@ -41,38 +29,43 @@ object Day5 : AOC<String> {
             parseStacks(stacks) to parseMoves(moves)
         }
 
-    private fun List<ArrayDeque<Char>>.move(move: Move) {
-        val (amount, from, to) = move
-        val temp = ArrayDeque<Char>()
-        repeat(amount) {
-            temp.addLast(this[from].removeLast())
-        }
-        repeat(amount) {
-            this[to].addLast(temp.removeLast())
-        }
-    }
+    private fun stackManipulation(
+        stacks: Stacks<Char>,
+        moves: List<Move>,
+        movingAction: (Stacks<Char>, Move) -> Stacks<Char>
+    ): String =
+        moves.fold(stacks, movingAction).map(List<Char>::last).joinToString("")
+
 
     override fun part1(input: String): String {
         val (stacks, moves) = parseInput(input)
-        moves.forEach { (amount, from, to) ->
-            repeat(amount) {
-                stacks[to].addLast(stacks[from].removeLast())
-            }
-        }
-        return stacks.map(List<Char>::last).joinToString("")
+        return stackManipulation(stacks, moves, Stacks<Char>::moveOneByOne)
     }
 
     override fun part2(input: String): String {
         val (stacks, moves) = parseInput(input)
-        moves.forEach { move ->
-            stacks.move(move)
+        return stackManipulation(stacks, moves, Stacks<Char>::moveStack)
+    }
+}
+
+private data class Move(val amount: Int, val from: Int, val to: Int)
+
+private fun <T> T.id() = this
+
+private fun Stacks<Char>.move(move: Move, placingAction: (List<Char>) -> List<Char>) =
+    mapIndexed { index, stack ->
+        when (index) {
+            move.from -> stack.dropLast(move.amount)
+            move.to -> stack + placingAction(this[move.from].takeLast(move.amount))
+            else -> stack
         }
-        return stacks.map(ArrayDeque<Char>::removeLast).joinToString("")
     }
 
-    private data class Move(
-        val amount: Int,
-        val from: Int,
-        val to: Int
-    )
-}
+private fun Stacks<Char>.moveOneByOne(move: Move): Stacks<Char> = move(move, List<Char>::asReversed)
+private fun Stacks<Char>.moveStack(move: Move): Stacks<Char> = move(move, List<Char>::id)
+
+private fun <T> List<List<T>>.rotateLeft(): List<List<T>> = first().indices.map { r -> map { it[r] } }
+
+private fun <T> List<T>.upSizeTo(size: Int, filler: T): List<T> =
+    if (this.size >= size) this
+    else this + List(size - this.size) { filler }

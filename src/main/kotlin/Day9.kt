@@ -39,13 +39,13 @@ private enum class Direction {
 }
 
 private data class Knot(val x: Int, val y: Int) {
-    fun move(k: Knot): Knot {
-        val dx = k.x - x
-        val dy = k.y - y
+    fun move(towards: Knot): Knot {
+        val dx = towards.x - x
+        val dy = towards.y - y
         return when {
-            abs(dx) == 2 && abs(dy) <= 1 -> Knot(x.approach(k.x), k.y)
-            abs(dx) <= 1 && abs(dy) == 2 -> Knot(k.x, y.approach(k.y))
-            abs(dx) == 2 && abs(dy) == 2 -> Knot(x.approach(k.x), y.approach(k.y))
+            abs(dx) == 2 && abs(dy) <= 1 -> Knot(x.approach(towards.x), towards.y)
+            abs(dx) <= 1 && abs(dy) == 2 -> Knot(towards.x, y.approach(towards.y))
+            abs(dx) == 2 && abs(dy) == 2 -> Knot(x.approach(towards.x), y.approach(towards.y))
             else -> this
         }
     }

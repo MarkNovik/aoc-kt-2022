@@ -2,7 +2,7 @@ import org.junit.jupiter.api.Test
 import kotlin.io.path.div
 import kotlin.test.assertEquals
 
-class Day7Test {
+class Day7Tests {
     val input = read(testResources / "Day7.txt")
 
     @Test

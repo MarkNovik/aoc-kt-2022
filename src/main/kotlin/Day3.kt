@@ -19,12 +19,12 @@ object Day3 : AOC<Int> {
             }.single()
         }
         .sumOf(::priority)
+}
 
-    private class Rucksack(items: String) {
-        val compartment1: String = items.substring(0, items.length / 2)
-        val compartment2: String = items.substring(items.length / 2)
+private class Rucksack(items: String) {
+    val compartment1: String = items.substring(0, items.length / 2)
+    val compartment2: String = items.substring(items.length / 2)
 
-        fun commonItems(): Set<Char> =
-            compartment1.toSet() intersect compartment2.toSet()
-    }
+    fun commonItems(): Set<Char> =
+        compartment1.toSet() intersect compartment2.toSet()
 }
