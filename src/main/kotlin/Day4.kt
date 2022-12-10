@@ -1,4 +1,4 @@
-object Day4 : AOC<Int> {
+object Day4 : AOC<Int, Int> {
     private fun parseLine(line: String): Pair<IntRange, IntRange> = line
         .split(",", "-")
         .map(String::toInt)

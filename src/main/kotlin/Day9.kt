@@ -1,6 +1,6 @@
 import kotlin.math.abs
 
-object Day9 : AOC<Int> {
+object Day9 : AOC<Int, Int> {
     private fun ropeMoves(tailKnots: Int, input: String) = input
         .lines()
         .flatMap(Direction::fromCodedString)

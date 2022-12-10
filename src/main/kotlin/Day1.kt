@@ -1,4 +1,4 @@
-object Day1 : AOC<Int> {
+object Day1 : AOC<Int, Int> {
     private val elfTotal = { elf: String ->
         elf
             .split(System.lineSeparator())

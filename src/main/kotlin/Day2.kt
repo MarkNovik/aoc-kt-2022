@@ -1,6 +1,6 @@
 import Outcome.*
 
-object Day2 : AOC<Int> {
+object Day2 : AOC<Int, Int> {
 
     private fun parseBattle(line: String): Battle {
         val (elf, _, me) = line.toList()

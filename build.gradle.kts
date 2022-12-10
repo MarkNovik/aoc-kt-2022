@@ -10,11 +10,13 @@ version = "1.0"
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
     testImplementation(kotlin("test"))
     implementation(kotlin("reflect"))
+    implementation("me.mark:ColoredString:2.0")
 }
 
 tasks.test {

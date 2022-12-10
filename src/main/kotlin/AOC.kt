@@ -1,4 +1,4 @@
-sealed interface AOC<T : Any> {
-    fun part1(input: String): T
-    fun part2(input: String): T
+sealed interface AOC<TPart1 : Any, TPart2: Any> {
+    fun part1(input: String): TPart1
+    fun part2(input: String): TPart2
 }

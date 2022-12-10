@@ -1,8 +1,9 @@
 import FS.Dir
 import FS.File
 
-object Day7 : AOC<Int> {
+object Day7 : AOC<Int, Int> {
 
+    @Suppress("NON_TAIL_RECURSIVE_CALL")
     private tailrec fun getFileSystem(commands: List<String>, fs: Dir = Dir("/")): Pair<List<String>, Dir> {
         if (commands.isEmpty()) return emptyList<String>() to fs
 

@@ -1,4 +1,4 @@
-object Day6 : AOC<Int> {
+object Day6 : AOC<Int, Int> {
 
     private fun findConsecutiveDistinctCharactersIndex(source: String, length: Int): Int = source
         .withIndex()

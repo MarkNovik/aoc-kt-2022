@@ -1,5 +1,5 @@
 @OptIn(ExperimentalStdlibApi::class)
-object Day8 : AOC<Int> {
+object Day8 : AOC<Int, Int> {
     private fun List<List<Int>>.isVisible(y: Int, x: Int): Boolean {
         val theTree = this[y][x]
         val shorter = { it: Int -> it < theTree }

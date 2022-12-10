@@ -1,6 +1,6 @@
 private typealias Stacks<T> = List<List<T>>
 
-object Day5 : AOC<String> {
+object Day5 : AOC<String, String> {
     private fun parseMoves(moves: String): List<Move> = moves
         .lines()
         .map { it.split(" ").mapNotNull(String::toIntOrNull) }

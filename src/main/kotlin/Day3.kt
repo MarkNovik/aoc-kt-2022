@@ -1,4 +1,4 @@
-object Day3 : AOC<Int> {
+object Day3 : AOC<Int, Int> {
     private fun priority(char: Char) =
         (('a'..'z') + ('A'..'Z')).indexOf(char) + 1
 
