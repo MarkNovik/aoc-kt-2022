@@ -10,7 +10,7 @@ object Day5 : AOC<String, String> {
         .windowed(3, 4)
         .map { it.singleOrNull(Char::isLetter) ?: ' ' }
 
-    private fun parseStacks(input: String): List<ArrayDeque<Char>> {
+    private fun parseStacks(input: String): List<List<Char>> {
         val size = input.lines().last().maxOf { it.digitToIntOrNull() ?: 0 }
         return input
             .lines()
@@ -20,10 +20,9 @@ object Day5 : AOC<String, String> {
             .map { it.upSizeTo(size, ' ') }
             .rotateLeft()
             .map { it.filter(Char::isLetter) }
-            .map(::ArrayDeque)
     }
 
-    private fun parseInput(input: String): Pair<List<ArrayDeque<Char>>, List<Move>> = input
+    private fun parseInput(input: String): Pair<List<List<Char>>, List<Move>> = input
         .split(System.lineSeparator().repeat(2))
         .let { (stacks, moves) ->
             parseStacks(stacks) to parseMoves(moves)

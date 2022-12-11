@@ -21,9 +21,9 @@ inline fun tryRun(block: () -> Any): String = try {
     block().toString()
 } catch (e: NotImplementedError) {
     "Not Implemented"
-} catch (t: Throwable) {
-    "Error: $t}"
-}
+} /*catch (t: Throwable) {
+    "Error: $t"
+}*/
 
 @OptIn(ExperimentalTime::class)
 inline fun timed(block: () -> Any): String {
