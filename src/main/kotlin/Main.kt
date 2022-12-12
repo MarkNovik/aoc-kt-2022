@@ -4,6 +4,7 @@ import kotlin.io.path.div
 import kotlin.io.path.exists
 import kotlin.io.path.readText
 import kotlin.time.ExperimentalTime
+import kotlin.time.measureTime
 import kotlin.time.measureTimedValue
 
 val resources = Path("src") / "main" / "resources"
@@ -39,6 +40,7 @@ fun aoc() {
             val name = it.simpleName ?: return@mapNotNull null
             name to obj
         }
+        .sortedBy { it.first.takeLastWhile(Char::isDigit).toInt() }
         .forEach { (name, obj) ->
             print("${name.spaceBeforeDigit}:")
             val path = resources / name.txt
@@ -51,4 +53,5 @@ fun aoc() {
         }
 }
 
-fun main() = aoc()
+@OptIn(ExperimentalTime::class)
+fun main() = println(measureTime { aoc() })
