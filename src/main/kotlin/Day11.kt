@@ -11,7 +11,7 @@ object Day11 : AOC<Long, Long> {
         val base = monkeys.fold(1L) { acc, monkey -> acc * monkey.testDivisibleBy }
         return monkeys
             .repeat(10000) { roundPanic(it, base) }
-            .map { it.inspected }
+            .map(Monkey::inspected)
             .sortedDescending()
             .take(2)
             .reduce(Long::times)
@@ -114,13 +114,11 @@ private fun roundChill(monkeys: Set<Monkey>): Set<Monkey> = round(
 private fun roundPanic(
     monkeys: Set<Monkey>,
     base: Long
-): Set<Monkey> {
-    return round(
-        monkeys,
-        { it % base },
-        0
-    )
-}
+): Set<Monkey> = round(
+    monkeys,
+    { it % base },
+    0
+)
 
 private tailrec fun <T> T.repeat(times: Long, action: (T) -> T): T =
     if (times == 0L) this
