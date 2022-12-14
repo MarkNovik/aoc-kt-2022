@@ -1,6 +1,4 @@
 import DistressSignal.SignalList
-import Lexeme.CloseBracket
-import Lexeme.Comma
 import kotlin.math.max
 
 private typealias DistressSignalListPairs = List<Pair<DistressSignal, DistressSignal>>
@@ -77,8 +75,8 @@ private tailrec fun lexText(input: String, acc: List<Lexeme> = emptyList()): Lis
     when {
         input.isEmpty() -> acc
         input.first() == '[' -> lexText(input.drop(1), acc + Lexeme.OpenBracket)
-        input.first() == ']' -> lexText(input.drop(1), acc + CloseBracket)
-        input.first() == ',' -> lexText(input.drop(1), acc + Comma)
+        input.first() == ']' -> lexText(input.drop(1), acc + Lexeme.CloseBracket)
+        input.first() == ',' -> lexText(input.drop(1), acc + Lexeme.Comma)
         input.first().isDigit() -> lexText(
             input.dropWhile(Char::isDigit),
             acc + Lexeme.Number(input.takeWhile(Char::isDigit).toInt())
@@ -93,9 +91,9 @@ private class Parser(private val tokens: List<Lexeme>) {
     private fun list(): List<DistressSignal> {
         consume<Lexeme.OpenBracket>()
         val res = mutableListOf<DistressSignal>()
-        while (!match<CloseBracket>()) {
+        while (!match<Lexeme.CloseBracket>()) {
             res += distressSignal()
-            match<Comma>()
+            match<Lexeme.Comma>()
         }
         return res
     }

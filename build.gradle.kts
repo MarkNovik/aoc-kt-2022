@@ -17,6 +17,7 @@ dependencies {
     testImplementation(kotlin("test"))
     implementation(kotlin("reflect"))
     implementation("me.mark:ColoredString:2.0")
+    implementation("com.googlecode.lanterna:lanterna:3.1.1")
 }
 
 tasks.test {
