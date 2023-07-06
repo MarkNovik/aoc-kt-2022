@@ -1,3 +1,7 @@
+import me.mark.partikt.par
+import me.mark.partikt.rep
+import me.mark.partikt.rev
+
 private typealias Stacks<T> = List<List<T>>
 
 object Day5 : AOC<String, String> {
@@ -17,9 +21,9 @@ object Day5 : AOC<String, String> {
             .asReversed()
             .drop(1)
             .map(::parseStackLine)
-            .map { it.upSizeTo(size, ' ') }
-            .rotateLeft()
-            .map { it.filter(Char::isLetter) }
+            .map(rev<_, _, Char, _>(::upSizeTo).par(' ', size))
+            .let(::rotateLeft)
+            .map(List<Char>::filter.rep(Char::isLetter))   // { it.filter(Char::isLetter) }
     }
 
     private fun parseInput(input: String): Pair<List<List<Char>>, List<Move>> = input
@@ -38,33 +42,34 @@ object Day5 : AOC<String, String> {
 
     override fun part1(input: String): String {
         val (stacks, moves) = parseInput(input)
-        return stackManipulation(stacks, moves, Stacks<Char>::moveOneByOne)
+        return stackManipulation(stacks, moves, ::moveOneByOne)
     }
 
     override fun part2(input: String): String {
         val (stacks, moves) = parseInput(input)
-        return stackManipulation(stacks, moves, Stacks<Char>::moveStack)
+        return stackManipulation(stacks, moves, ::moveStack)
     }
 }
 
 private data class Move(val amount: Int, val from: Int, val to: Int)
 
-private fun <T> T.id() = this
+private fun <T> id(t: T) = t
 
-private fun Stacks<Char>.move(move: Move, placingAction: (List<Char>) -> List<Char>) =
-    mapIndexed { index, stack ->
+private fun move(stacks: Stacks<Char>, move: Move, placingAction: (List<Char>) -> List<Char>) =
+    stacks.mapIndexed { index, stack ->
         when (index) {
             move.from -> stack.dropLast(move.amount)
-            move.to -> stack + placingAction(this[move.from].takeLast(move.amount))
+            move.to -> stack + placingAction(stacks[move.from].takeLast(move.amount))
             else -> stack
         }
     }
 
-private fun Stacks<Char>.moveOneByOne(move: Move): Stacks<Char> = move(move, List<Char>::asReversed)
-private fun Stacks<Char>.moveStack(move: Move): Stacks<Char> = move(move, List<Char>::id)
+private fun moveOneByOne(stacks: Stacks<Char>, move: Move): Stacks<Char> = move(stacks, move, List<Char>::asReversed)
+private fun moveStack(stacks: Stacks<Char>, move: Move): Stacks<Char> = move(stacks, move, ::id)
 
-private fun <T> List<List<T>>.rotateLeft(): List<List<T>> = first().indices.map { r -> map { it[r] } }
+private fun <T> rotateLeft(lists: List<List<T>>): List<List<T>> =
+    lists.first().indices.map { r -> lists.map(List<T>::get.rep(r)) }
 
-private fun <T> List<T>.upSizeTo(size: Int, filler: T): List<T> =
-    if (this.size >= size) this
-    else this + List(size - this.size) { filler }
+private fun <T> upSizeTo(list: List<T>, size: Int, filler: T): List<T> =
+    if (list.size >= size) list
+    else list + List(size - list.size) { filler }

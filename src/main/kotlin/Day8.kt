@@ -1,14 +1,18 @@
+import me.mark.partikt.par
+import me.mark.partikt.rep
+import me.mark.partikt.rev
+
 @OptIn(ExperimentalStdlibApi::class)
 object Day8 : AOC<Int, Int> {
-    private fun List<List<Int>>.isVisible(y: Int, x: Int): Boolean {
-        val theTree = this[y][x]
+    private fun isVisible(forest: List<List<Int>>, y: Int, x: Int): Boolean {
+        val theTree = forest[y][x]
         val shorter = { it: Int -> it < theTree }
         val onLine = { list: List<Int> -> list[x] }
         return listOf(
-            this[y].slice(0..<x).all(shorter),
-            this[y].slice((x + 1)..<this[y].size).all(shorter),
-            this.slice(0..<y).map(onLine).all(shorter),
-            this.slice((y + 1)..<size).map(onLine).all(shorter),
+            forest[y].slice(0..<x).all(shorter),
+            forest[y].slice((x + 1)..<forest[y].size).all(shorter),
+            forest.slice(0..<y).map(onLine).all(shorter),
+            forest.slice((y + 1)..<forest.size).map(onLine).all(shorter),
         ).any { it }
     }
 
@@ -21,37 +25,30 @@ object Day8 : AOC<Int, Int> {
         return count
     }
 
-    private fun List<List<Int>>.scenicScore(y: Int, x: Int): Int {
-        val theTree = this[y][x]
-        val onLine = { list: List<Int> -> list[x] }
+    private fun scenicScore(forest: List<List<Int>>, y: Int, x: Int): Int {
+        val theTree = forest[y][x]
+        val onLine = List<Int>::get.rep(x) //{ list: List<Int> -> list[x] }
         return listOf(
-            this[y].slice(0..<x).asReversed(),
-            this[y].slice((x + 1)..<this[y].size),
-            slice(0..<y).map(onLine).asReversed(),
-            slice((y + 1)..<size).map(onLine)
+            forest[y].slice(0..<x).asReversed(),
+            forest[y].slice((x + 1)..<forest[y].size),
+            forest.slice(0..<y).map(onLine).asReversed(),
+            forest.slice((y + 1)..<forest.size).map(onLine)
         )
-            .map { countVisible(it, theTree) }
+            .map(::countVisible.rep(theTree))
             .reduce(Int::times)
     }
 
     override fun part1(input: String): Int {
-        val matrix = input.lines().map { it.map(Char::digitToInt) }
+        val matrix = input.lines().map(rev<_, _, List<Int>>(String::map).par(Char::digitToInt))
         return matrix.indices
-            .sumOf { y ->
-                matrix[y].indices
-                    .count { x ->
-                        matrix.isVisible(y, x)
-                    }
-            }
+            .sumOf { y -> matrix[y].indices.count(::isVisible.par(matrix, y)) }
     }
 
 
     override fun part2(input: String): Int {
-        val matrix = input.lines().map { it.map(Char::digitToInt) }
+        val matrix = input.lines().map(rev<_, _, List<Int>>(String::map).par(Char::digitToInt))
         return matrix.withIndex().maxOf { (y, line) ->
-            line.indices.maxOf { x ->
-                matrix.scenicScore(y, x)
-            }
+            line.indices.maxOf(::scenicScore.par(matrix, y))
         }
     }
 }

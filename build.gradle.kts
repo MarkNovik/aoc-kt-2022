@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.8.0-Beta"
+    kotlin("jvm") version "1.8.20"
     application
 }
 
@@ -16,7 +16,8 @@ repositories {
 dependencies {
     testImplementation(kotlin("test"))
     implementation(kotlin("reflect"))
-    implementation("me.mark:ColoredString:2.0")
+    implementation("me.mark:colosok:1.0.0")
+    implementation("me.mark:partikt:1.0.0")
     implementation("com.googlecode.lanterna:lanterna:3.1.1")
 }
 

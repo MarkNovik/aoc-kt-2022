@@ -19,7 +19,7 @@ object Day14 : AOC<Int, Int> {
         val maxX = paths.maxOf { it.maxOf(Pair<Int, Int>::first) }
         val minX = paths.minOf { it.minOf(Pair<Int, Int>::first) }
         val maxY = paths.maxOf { it.maxOf(Pair<Int, Int>::second) }
-        val rocks = paths.flatMap { it.toFullSteps() }.toSet()
+        val rocks = paths.flatMap(::fullSteps).toSet()
 
         return Triple(rocks, minX to maxX, maxY)
     }
@@ -75,8 +75,8 @@ private fun Set<Pair<Int, Int>>.toRockMap(): RockMap = groupBy { it.first }
     .toMutableMap()
 
 
-private fun List<Pair<Int, Int>>.toFullSteps(): List<Pair<Int, Int>> = buildList {
-    this@toFullSteps.zipWithNext { (x1, y1), (x2, y2) ->
+private fun fullSteps(list: List<Pair<Int, Int>>): List<Pair<Int, Int>> = buildList {
+    list.zipWithNext { (x1, y1), (x2, y2) ->
         val xs = min(x1, x2)..max(x1, x2)
         val ys = min(y1, y2)..max(y1, y2)
 

@@ -1,3 +1,6 @@
+import me.mark.partikt.par
+import me.mark.partikt.rev
+
 object Day3 : AOC<Int, Int> {
     private fun priority(char: Char) =
         (('a'..'z') + ('A'..'Z')).indexOf(char) + 1
@@ -6,17 +9,13 @@ object Day3 : AOC<Int, Int> {
         .lines()
         .map(::Rucksack)
         .map(Rucksack::commonItems)
-        .sumOf {
-            it.sumOf(::priority)
-        }
+        .sumOf(rev<_, _, Int>(Set<Char>::sumOf).par(::priority))
 
     override fun part2(input: String): Int = input
         .lines()
         .chunked(3)
         .map {
-            it.fold(it.first().toSet()) { acc, next ->
-                acc intersect next.toSet()
-            }.single()
+            it.map(String::toSet).fold(it.first().toSet(), Set<Char>::intersect).single()
         }
         .sumOf(::priority)
 }
